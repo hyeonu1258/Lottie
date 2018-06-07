@@ -1,0 +1,10 @@
+bfg-1.12.15.jar
+*.hprof
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
