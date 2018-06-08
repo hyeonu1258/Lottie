@@ -1,15 +1,19 @@
-package com.hyeonu.lottie
+package com.hyeonu.lottie.View
 
 import android.Manifest
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProviders
 import android.content.ContentValues
 import android.content.Intent
 import android.databinding.DataBindingUtil
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ColorFilter
+import android.graphics.Matrix
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.SimpleColorFilter
@@ -17,18 +21,23 @@ import com.airbnb.lottie.model.KeyPath
 import com.airbnb.lottie.value.LottieValueCallback
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
+import com.hyeonu.lottie.R
+import com.hyeonu.lottie.ViewModel.ImageViewModel
 import com.hyeonu.lottie.databinding.ActivityMainBinding
-import org.jetbrains.anko.*
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.design.snackbar
-import java.util.ArrayList
+import org.jetbrains.anko.selector
+import org.jetbrains.anko.textColor
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
-    var filePath: String? = null
+    private var filePath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        ViewModelProviders.of(this).get(ImageViewModel.class);
         binding.fab.setOnClickListener {
             selector("선택하세요.", listOf("Camera", "Gallery"), { dialogInterface, i ->
                 when (i) {
@@ -45,20 +54,18 @@ class MainActivity : AppCompatActivity() {
                                 .setDeniedMessage("[설정] > [권한]에서 권한을 허용할 수 있습니다.")
                                 .setPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                 .check()
-
                     }
-                    1 -> {
-                        TedPermission
-                                .with(this)
-                                .setPermissionListener(object : PermissionListener {
-                                    override fun onPermissionGranted() {
-                                        goToGallery()
-                                    }
 
-                                    override fun onPermissionDenied(deniedPermissions: ArrayList<String>?) {
-                                        snackbar(binding.fab, "$deniedPermissions 권한이 필요합니다.")
-                                    }
-                                })
+                    1 -> {
+                        TedPermission.with(this).setPermissionListener(object : PermissionListener {
+                            override fun onPermissionGranted() {
+                                goToGallery()
+                            }
+
+                            override fun onPermissionDenied(deniedPermissions: ArrayList<String>?) {
+                                snackbar(binding.fab, "$deniedPermissions 권한이 필요합니다.")
+                            }
+                        })
                                 .setDeniedMessage("[설정] > [권한]에서 권한을 허용할 수 있습니다.")
                                 .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)
                                 .check()
@@ -72,59 +79,26 @@ class MainActivity : AppCompatActivity() {
         if (resultCode != Activity.RESULT_OK) {
             return
         }
+
         when (requestCode) {
             GALLERY_REQUEST -> {
                 if (data == null || data.data == null) {
                     return
                 }
                 var bitmap = bringImage(data.data)
-                var matrix = Matrix()
-                matrix.postRotate(90f)
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-                binding.cameraImage.setImageBitmap(bitmap)
-                Palette.from(bitmap).generate({
-                    binding.lightVibrant.setBackgroundColor(0)
-                    binding.darkVibrant.setBackgroundColor(0)
-                    binding.lightMuted.setBackgroundColor(0)
-                    binding.darkMuted.setBackgroundColor(0)
-                    it.lightVibrantSwatch?.rgb?.let { it1 -> binding.lightVibrant.setBackgroundColor(it1) }
-                    it.darkVibrantSwatch?.rgb?.let { it1 -> binding.darkVibrant.setBackgroundColor(it1) }
-                    it.lightMutedSwatch?.rgb?.let { it1 -> binding.lightMuted.setBackgroundColor(it1) }
-                    it.darkMutedSwatch?.rgb?.let { it1 -> binding.darkMuted.setBackgroundColor(it1) }
-                    binding.lottie.addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER,
-                            LottieValueCallback<ColorFilter>(it.darkVibrantSwatch?.rgb?.let { it1 -> SimpleColorFilter(it1) }))
-                })
+                bindImage(rotation90(bitmap))
             }
+
             TAKE_PHOTO_REQUEST -> {
                 var bitmap = bringImage(Uri.parse(filePath))
-                var matrix = Matrix()
-                matrix.postRotate(90f)
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-                binding.cameraImage.setImageBitmap(bitmap)
-                Palette.from(bitmap).generate({
-                    binding.lightVibrant.setBackgroundColor(0)
-                    binding.darkVibrant.setBackgroundColor(0)
-                    binding.lightMuted.setBackgroundColor(0)
-                    binding.darkMuted.setBackgroundColor(0)
-                    it.lightVibrantSwatch?.rgb?.let { it1 -> binding.lightVibrant.setBackgroundColor(it1) }
-                    it.darkVibrantSwatch?.rgb?.let { it1 -> binding.darkVibrant.setBackgroundColor(it1) }
-                    it.lightMutedSwatch?.rgb?.let { it1 -> binding.lightMuted.setBackgroundColor(it1) }
-                    it.darkMutedSwatch?.rgb?.let { it1 -> binding.darkMuted.setBackgroundColor(it1) }
-                    binding.lottie.addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER,
-                            LottieValueCallback<ColorFilter>(it.darkVibrantSwatch?.rgb?.let { it1 -> SimpleColorFilter(it1) }))
-                })
+                bindImage(rotation90(bitmap))
             }
         }
     }
 
     fun goToGallery() {
-//        val intent = Intent(Intent.ACTION_GET_CONTENT)
-//        intent.type = "image/*"
-//        if (intent.resolveActivity(packageManager) != null) {
-//            startActivityForResult(intent, GALLERY_REQUEST)
-//        }
         intent = Intent(Intent.ACTION_PICK)
-        intent.setType(MediaStore.Images.Media.CONTENT_TYPE)
+        intent.type = MediaStore.Images.Media.CONTENT_TYPE
         startActivityForResult(intent, GALLERY_REQUEST)
     }
 
@@ -149,6 +123,34 @@ class MainActivity : AppCompatActivity() {
         cursor.close()
 
         return BitmapFactory.decodeFile(photoPath)
+    }
+
+    fun rotation90(bitmap: Bitmap): Bitmap {
+        var matrix = Matrix()
+        matrix.postRotate(90f)
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    fun bindImage(bitmap: Bitmap) {
+        binding.cameraImage.setImageBitmap(bitmap)
+        Palette.from(bitmap).generate({
+            binding.lightVibrant.backgroundColor = it.lightVibrantSwatch?.rgb ?: 0
+            binding.lightVibrant.textColor = it.lightVibrantSwatch?.bodyTextColor ?: 0
+            binding.vibrant.backgroundColor = it.vibrantSwatch?.rgb ?: 0
+            binding.vibrant.textColor = it.vibrantSwatch?.bodyTextColor ?: 0
+            binding.darkVibrant.backgroundColor = it.darkVibrantSwatch?.rgb ?: 0
+            binding.darkVibrant.textColor = it.darkVibrantSwatch?.bodyTextColor ?: 0
+            binding.lightMuted.backgroundColor = it.lightMutedSwatch?.rgb ?: 0
+            binding.lightMuted.textColor = it.lightMutedSwatch?.bodyTextColor ?: 0
+            binding.muted.backgroundColor = it.mutedSwatch?.rgb ?: 0
+            binding.muted.textColor = it.mutedSwatch?.bodyTextColor ?: 0
+            binding.darkMuted.backgroundColor = it.darkMutedSwatch?.rgb ?: 0
+            binding.darkMuted.textColor = it.darkMutedSwatch?.bodyTextColor ?: 0
+
+            binding.lottie.addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER,
+                    LottieValueCallback<ColorFilter>(SimpleColorFilter(
+                            it.vibrantSwatch?.rgb ?: it.mutedSwatch?.rgb ?: 0)))
+        })
     }
 
     companion object {

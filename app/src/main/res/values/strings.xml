@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Lottie</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="light_vibrant">Light Vibrant</string>
+    <string name="vibrant">Vibrant</string>
+    <string name="dark_vibrant">Dark Vibrant</string>
+    <string name="light_muted">Light Muted</string>
+    <string name="muted">Muted</string>
+    <string name="dark_muted">Dark Muted</string>
 </resources>
