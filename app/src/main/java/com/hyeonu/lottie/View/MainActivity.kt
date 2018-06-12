@@ -33,9 +33,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 //        var viewModel = ViewModelProviders.of(this).get(ImageViewModel::class.java)
-        binding.lottie.setImageAssetDelegate {
-            BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_foreground)
-        }
         binding.item = colors
         binding.fab.setOnClickListener {
             selector("선택하세요.", listOf("Camera", "Gallery", "Init"), { dialogInterface, i ->
