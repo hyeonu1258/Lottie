@@ -11,8 +11,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
-import com.airbnb.lottie.LottieProperty
-import com.airbnb.lottie.SimpleColorFilter
+import android.view.animation.Animation
+import com.airbnb.lottie.*
 import com.airbnb.lottie.model.KeyPath
 import com.airbnb.lottie.value.LottieValueCallback
 import com.gun0912.tedpermission.PermissionListener
@@ -22,6 +22,7 @@ import com.hyeonu.lottie.R
 import com.hyeonu.lottie.databinding.ActivityMainBinding
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.selector
+import java.lang.ref.WeakReference
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 //        var viewModel = ViewModelProviders.of(this).get(ImageViewModel::class.java)
         binding.item = colors
         binding.fab.setOnClickListener {
-            selector("선택하세요.", listOf("Camera", "Gallery", "Init"), { dialogInterface, i ->
+            selector("선택하세요.", listOf("Camera", "Gallery", "Init")) { _, i ->
                 when (i) {
                     0 -> {
                         TedPermission.with(this).setPermissionListener(object : PermissionListener {
@@ -71,8 +72,51 @@ class MainActivity : AppCompatActivity() {
                         init()
                     }
                 }
-            })
+            }
         }
+
+        var lottieDrawable = LottieDrawable()
+//        binding.lottieImage.setImageDrawable(lottieDrawable)
+//        lottieDrawable.setImagesAssetsFolder("images/")
+//        var compositionLoader = LottieComposition.Factory.fromRawFile(this, R.raw.yonghee) { composition ->
+//            run {
+//                lottieDrawable.composition = composition
+//
+//                lottieDrawable.getImageAsset("image_0")
+//                lottieDrawable.getImageAsset("image_1")
+//                lottieDrawable.getImageAsset("image_2")
+//                lottieDrawable.getImageAsset("image_3")
+//                lottieDrawable.getImageAsset("image_4")
+//                lottieDrawable.getImageAsset("image_5")
+//                lottieDrawable.getImageAsset("image_6")
+//                lottieDrawable.getImageAsset("image_7")
+//                lottieDrawable.getImageAsset("image_8")
+//                lottieDrawable.getImageAsset("image_9")
+//                lottieDrawable.getImageAsset("image_10")
+//                lottieDrawable.getImageAsset("image_11")
+//                lottieDrawable.getImageAsset("image_12")
+//                lottieDrawable.getImageAsset("image_13")
+//                lottieDrawable.getImageAsset("image_14")
+//                lottieDrawable.getImageAsset("image_15")
+//                lottieDrawable.getImageAsset("image_16")
+//                lottieDrawable.getImageAsset("image_17")
+//                lottieDrawable.getImageAsset("image_18")
+//                lottieDrawable.getImageAsset("image_19")
+//                lottieDrawable.getImageAsset("image_20")
+//                lottieDrawable.getImageAsset("image_21")
+//                lottieDrawable.getImageAsset("image_22")
+//                lottieDrawable.getImageAsset("image_23")
+//                lottieDrawable.getImageAsset("image_24")
+//                lottieDrawable.getImageAsset("image_25")
+//                lottieDrawable.getImageAsset("image_26")
+//                lottieDrawable.getImageAsset("image_27")
+//                lottieDrawable.getImageAsset("image_28")
+//                lottieDrawable.getImageAsset("image_29")
+//
+//                lottieDrawable.repeatCount = LottieDrawable.INFINITE
+//                lottieDrawable.playAnimation()
+//            }
+//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -115,7 +159,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getImageFromUri(uri: Uri): Bitmap {
+    private fun getImageFromUri(uri: Uri) : Bitmap {
         val cursor = contentResolver.query(uri, Array(1) { MediaStore.Images.ImageColumns.DATA },
                 null, null, null)
         cursor.moveToFirst()
@@ -125,7 +169,7 @@ class MainActivity : AppCompatActivity() {
         return BitmapFactory.decodeFile(photoPath)
     }
 
-    private fun rotateImageFor90Degree(bitmap: Bitmap): Bitmap {
+    private fun rotateImageFor90Degree(bitmap: Bitmap) : Bitmap {
         var matrix = Matrix()
         matrix.postRotate(90f)
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
@@ -133,31 +177,31 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindImage(bitmap: Bitmap) {
         binding.cameraImage.setImageBitmap(bitmap)
-        Palette.from(bitmap).generate({
-            colors.lightVibrant = it.lightVibrantSwatch?.rgb ?: 0
-            colors.lightVibrantTextColor = it.lightVibrantSwatch?.bodyTextColor ?: 0
-            colors.vibrant = it.vibrantSwatch?.rgb ?: 0
-            colors.vibrantTextColor = it.vibrantSwatch?.bodyTextColor ?: 0
-            colors.darkVibrant= it.darkVibrantSwatch?.rgb ?: 0
-            colors.darkVibrantTextColor = it.darkVibrantSwatch?.bodyTextColor ?: 0
-            colors.lightMuted= it.lightMutedSwatch?.rgb ?: 0
-            colors.lightMutedTextColor = it.lightMutedSwatch?.bodyTextColor ?: 0
-            colors.muted= it.mutedSwatch?.rgb ?: 0
-            colors.mutedTextColor = it.mutedSwatch?.bodyTextColor ?: 0
-            colors.darkMuted= it.darkMutedSwatch?.rgb ?: 0
-            colors.darkMutedTextColor = it.darkMutedSwatch?.bodyTextColor ?: 0
-            colors.colorFilter = it.vibrantSwatch?.rgb ?: it.mutedSwatch?.rgb ?: 0
-            binding.lottie.addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER,
-                    LottieValueCallback<ColorFilter>(SimpleColorFilter(colors.colorFilter)))
-            binding.item = colors
-        })
+//        Palette.from(bitmap).generate({
+//            colors.lightVibrant = it.lightVibrantSwatch?.rgb ?: 0
+//            colors.lightVibrantTextColor = it.lightVibrantSwatch?.bodyTextColor ?: 0
+//            colors.vibrant = it.vibrantSwatch?.rgb ?: 0
+//            colors.vibrantTextColor = it.vibrantSwatch?.bodyTextColor ?: 0
+//            colors.darkVibrant= it.darkVibrantSwatch?.rgb ?: 0
+//            colors.darkVibrantTextColor = it.darkVibrantSwatch?.bodyTextColor ?: 0
+//            colors.lightMuted= it.lightMutedSwatch?.rgb ?: 0
+//            colors.lightMutedTextColor = it.lightMutedSwatch?.bodyTextColor ?: 0
+//            colors.muted= it.mutedSwatch?.rgb ?: 0
+//            colors.mutedTextColor = it.mutedSwatch?.bodyTextColor ?: 0
+//            colors.darkMuted= it.darkMutedSwatch?.rgb ?: 0
+//            colors.darkMutedTextColor = it.darkMutedSwatch?.bodyTextColor ?: 0
+//            colors.colorFilter = it.vibrantSwatch?.rgb ?: it.mutedSwatch?.rgb ?: 0
+//            binding.lottie.addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER,
+//                    LottieValueCallback<ColorFilter>(SimpleColorFilter(colors.colorFilter)))
+//            binding.item = colors
+//        })
     }
 
     private fun init() {
         binding.item = Colors()
         binding.cameraImage.setImageBitmap(null)
-        binding.lottie.addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER,
-                LottieValueCallback<ColorFilter>(SimpleColorFilter(0)))
+//        binding.lottie.addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER,
+//                LottieValueCallback<ColorFilter>(SimpleColorFilter(0)))
     }
 
     companion object {
