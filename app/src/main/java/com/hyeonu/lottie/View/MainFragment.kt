@@ -3,7 +3,6 @@ package com.hyeonu.lottie.View
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.graphics.Bitmap
@@ -18,8 +17,6 @@ import android.support.v7.graphics.Palette
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.SimpleColorFilter
 import com.airbnb.lottie.model.KeyPath
@@ -41,14 +38,45 @@ class MainFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main)
 //        var viewModel = ViewModelProviders.of(this).get(ImageViewModel::class.java)
+        initView(inflater, container)
+
+        return binding.root
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        }
+
+        when (requestCode) {
+            GALLERY_REQUEST -> {
+                if (data == null || data.data == null) {
+                    return
+                }
+                var bitmap = getImageFromUri(data.data) ?: return
+                bindImage(rotateImageFor90Degree(bitmap))
+            }
+
+            TAKE_PHOTO_REQUEST -> {
+                var bitmap = getImageFromUri(Uri.parse(filePath)) ?: return
+                bindImage(rotateImageFor90Degree(bitmap))
+            }
+        }
+    }
+
+    private fun initView(inflater: LayoutInflater, container: ViewGroup?) {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
         binding.item = colors
+        setOnClickListener()
+    }
+
+    private fun setOnClickListener() {
         binding.fab.setOnClickListener {
             selector("선택하세요.", listOf("Camera", "Gallery", "Init")) { _, i ->
                 when (i) {
                     0 -> {
-                        TedPermission.with(this).setPermissionListener(object : PermissionListener {
+                        TedPermission.with(context).setPermissionListener(object : PermissionListener {
                             override fun onPermissionGranted() {
                                 goToCamera()
                             }
@@ -63,7 +91,7 @@ class MainFragment : Fragment() {
                     }
 
                     1 -> {
-                        TedPermission.with(this).setPermissionListener(object : PermissionListener {
+                        TedPermission.with(context).setPermissionListener(object : PermissionListener {
                             override fun onPermissionGranted() {
                                 goToGallery()
                             }
@@ -83,97 +111,39 @@ class MainFragment : Fragment() {
                 }
             }
         }
-
-        var lottieDrawable = LottieDrawable()
-        binding.lottieImage.setImageDrawable(lottieDrawable)
-        lottieDrawable.setImagesAssetsFolder("images/")
-        LottieComposition.Factory.fromRawFile(this, R.raw.yonghee) { composition ->
-            run {
-                lottieDrawable.composition = composition
-
-                lottieDrawable.getImageAsset("image_0")
-                lottieDrawable.getImageAsset("image_1")
-                lottieDrawable.getImageAsset("image_2")
-                lottieDrawable.getImageAsset("image_3")
-                lottieDrawable.getImageAsset("image_4")
-                lottieDrawable.getImageAsset("image_5")
-                lottieDrawable.getImageAsset("image_6")
-                lottieDrawable.getImageAsset("image_7")
-                lottieDrawable.getImageAsset("image_8")
-                lottieDrawable.getImageAsset("image_9")
-                lottieDrawable.getImageAsset("image_10")
-                lottieDrawable.getImageAsset("image_11")
-                lottieDrawable.getImageAsset("image_12")
-                lottieDrawable.getImageAsset("image_13")
-                lottieDrawable.getImageAsset("image_14")
-                lottieDrawable.getImageAsset("image_15")
-                lottieDrawable.getImageAsset("image_16")
-                lottieDrawable.getImageAsset("image_17")
-                lottieDrawable.getImageAsset("image_18")
-                lottieDrawable.getImageAsset("image_19")
-                lottieDrawable.getImageAsset("image_20")
-                lottieDrawable.getImageAsset("image_21")
-                lottieDrawable.getImageAsset("image_22")
-                lottieDrawable.getImageAsset("image_23")
-                lottieDrawable.getImageAsset("image_24")
-                lottieDrawable.getImageAsset("image_25")
-                lottieDrawable.getImageAsset("image_26")
-                lottieDrawable.getImageAsset("image_27")
-                lottieDrawable.getImageAsset("image_28")
-                lottieDrawable.getImageAsset("image_29")
-
-                lottieDrawable.repeatCount = LottieDrawable.INFINITE
-                lottieDrawable.playAnimation()
-            }
-        }
-
-        binding.alphaVideoView.setVideoFromAssets("helicopter.mp4")
-        return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode != Activity.RESULT_OK) {
-            return
-        }
-
-        when (requestCode) {
-            GALLERY_REQUEST -> {
-                if (data == null || data.data == null) {
-                    return
-                }
-                var bitmap = getImageFromUri(data.data)
-                bindImage(rotateImageFor90Degree(bitmap))
-            }
-
-            TAKE_PHOTO_REQUEST -> {
-                var bitmap = getImageFromUri(Uri.parse(filePath))
-                bindImage(rotateImageFor90Degree(bitmap))
-            }
-        }
+    private fun goToCamera() {
+        val values = ContentValues(1)
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg")
+        val fileUri = context?.contentResolver
+                ?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                ?: return
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.resolveActivity(context?.packageManager) ?: return
+        filePath = fileUri.toString()
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        startActivityForResult(intent, TAKE_PHOTO_REQUEST)
     }
 
-    fun goToGallery() {
+    private fun goToGallery() {
         var intent = Intent(Intent.ACTION_PICK)
         intent.type = MediaStore.Images.Media.CONTENT_TYPE
         startActivityForResult(intent, GALLERY_REQUEST)
     }
 
-    fun goToCamera() {
-        val values = ContentValues(1)
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg")
-        val fileUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(packageManager) != null) {
-            filePath = fileUri.toString()
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            startActivityForResult(intent, TAKE_PHOTO_REQUEST)
-        }
+    private fun init() {
+        binding.item = Colors()
+        binding.cameraImage.setImageBitmap(null)
+        binding.lottie.addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER,
+                LottieValueCallback<ColorFilter>(SimpleColorFilter(0)))
     }
 
-    private fun getImageFromUri(uri: Uri): Bitmap {
-        val cursor = contentResolver.query(uri, Array(1) { MediaStore.Images.ImageColumns.DATA },
-                null, null, null)
+    private fun getImageFromUri(uri: Uri): Bitmap? {
+        val cursor = context?.contentResolver?.query(uri, Array(1)
+        { MediaStore.Images.ImageColumns.DATA }, null, null, null)
+                ?: return null
         cursor.moveToFirst()
         val photoPath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
         cursor.close()
@@ -207,13 +177,6 @@ class MainFragment : Fragment() {
                     LottieValueCallback<ColorFilter>(SimpleColorFilter(colors.colorFilter)))
             binding.item = colors
         }
-    }
-
-    private fun init() {
-        binding.item = Colors()
-        binding.cameraImage.setImageBitmap(null)
-        binding.lottie.addValueCallback(KeyPath("**"), LottieProperty.COLOR_FILTER,
-                LottieValueCallback<ColorFilter>(SimpleColorFilter(0)))
     }
 
     companion object {
