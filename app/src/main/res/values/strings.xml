@@ -1,10 +1,15 @@
 <resources>
     <string name="app_name">Lottie</string>
-    <string name="title_activity_main2">Main2Activity</string>
     <string name="light_vibrant">Light Vibrant</string>
     <string name="vibrant">Vibrant</string>
     <string name="dark_vibrant">Dark Vibrant</string>
     <string name="light_muted">Light Muted</string>
     <string name="muted">Muted</string>
     <string name="dark_muted">Dark Muted</string>
+    <string name="action_settings">Settings</string>
+    <string name="palette">Palette</string>
+    <string name="lottie_amp_fresco"><![CDATA[Lottie & Fresco]]></string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

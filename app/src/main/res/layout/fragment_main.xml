@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.hyeonu.lottie.Model.Colors" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/lightVibrant"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginLeft="10dp"
+            android:background="@{item.lightVibrant}"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="@string/light_vibrant"
+            android:textColor="@{item.lightVibrantTextColor}"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/vibrant" />
+
+        <TextView
+            android:id="@+id/vibrant"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:background="@{item.vibrant}"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="@string/vibrant"
+            android:textColor="@{item.vibrantTextColor}"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/lightVibrant"
+            app:layout_constraintRight_toLeftOf="@id/darkVibrant" />
+
+        <TextView
+            android:id="@+id/darkVibrant"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginRight="10dp"
+            android:background="@{item.darkVibrant}"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="@string/dark_vibrant"
+            android:textColor="@{item.darkVibrantTextColor}"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/vibrant"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/lightMuted"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@{item.lightMuted}"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="@string/light_muted"
+            android:textColor="@{item.lightMutedTextColor}"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/muted"
+            app:layout_constraintTop_toBottomOf="@id/lightVibrant" />
+
+        <TextView
+            android:id="@+id/muted"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:background="@{item.muted}"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="@string/muted"
+            android:textColor="@{item.mutedTextColor}"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/lightMuted"
+            app:layout_constraintRight_toLeftOf="@id/darkMuted"
+            app:layout_constraintTop_toBottomOf="@id/vibrant" />
+
+        <TextView
+            android:id="@+id/darkMuted"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@{item.darkMuted}"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="@string/dark_muted"
+            android:textColor="@{item.darkMutedTextColor}"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/muted"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/darkVibrant" />
+
+        <ImageView
+            android:id="@+id/cameraImage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/darkMuted" />
+
+        <com.hyeonu.lottie.Util.FloatingLottieView
+            android:id="@+id/lottie"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/lottieImage"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_imageAssetsFolder="images/"
+            app:lottie_rawRes="@raw/happy_tree" />
+
+        <ImageView
+            android:id="@+id/lottieImage"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toRightOf="@id/lottie"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/lottie" />
+
+        <com.alphamovie.lib.AlphaMovieView
+            android:id="@+id/alphaVideoView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:accuracy="0.8"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lottie" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:backgroundTint="@android:color/holo_green_light"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_camera"
+            tools:ignore="VectorDrawableCompat" />
+    </android.support.constraint.ConstraintLayout>
+</layout>

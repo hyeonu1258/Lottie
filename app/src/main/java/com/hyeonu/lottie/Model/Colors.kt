@@ -1,7 +1,5 @@
 package com.hyeonu.lottie.Model
 
-import android.graphics.Bitmap
-
 class Colors @JvmOverloads constructor(var colorFilter: Int = 0,
                                        var lightVibrant: Int = 0, var lightVibrantTextColor: Int = 0,
                                        var vibrant: Int = 0, var vibrantTextColor: Int = 0,
