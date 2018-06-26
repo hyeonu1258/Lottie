@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--동영상 재생시 처음 검은색 배경이 보이는 문제로 인해 shader 커스텀-->
     <!--history-->
     <!--단순히 뷰를 invisible 시킨 후 영상파일이 모두 로드된 시점에(callback) 뷰를 visible 시키려했으나 뷰가 draw 되지 않으면-->
     <!--영상이 재생되지 않는 문제가 발생하였다. 결국 view 는 visible 로 하되 alpha 값을 투명으로 하여 일정 시간이 지난 다음(Timer)-->
     <!--alpha 값을 불투명으로 설정하는 대처로 진행하였지만 이것은 억지스런 해결법이기에 shader 를 커스텀하도록 수정하였다.-->
     <!--그냥 검은색(0,0,0)을 선별하여 투명하게 만들었더니 일정폰(A7)에서 검은화면이 그대로 노출되는 문제가 있었다.-->
     <!--검은색 범위를 조금 더 넓혀 문제를 해결할 수 있었지만 기종마다 검은색의 범위가 생길 수 있으므로 궁극적인 해결은 아니다.-->
+    <!--결국 이러한 문제를 해결하기 위해 VideoRenderer 에서 GL 을 그릴때 상태값에 따라 그리도록 수정하여 해결하였다.-->
     <string name="shader_custom">#extension GL_OES_EGL_image_external : require\n
             precision mediump float;
             varying vec2 vTextureCoord;

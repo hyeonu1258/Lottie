@@ -51,7 +51,7 @@ class VideoRenderer implements GLTextureView.Renderer, SurfaceTexture.OnFrameAva
     private FloatBuffer triangleVertices;
 
     private final String vertexShader =
-            "uniform mat4 uMVPMatrix;\n" +
+                    "uniform mat4 uMVPMatrix;\n" +
                     "uniform mat4 uSTMatrix;\n" +
                     "attribute vec4 aPosition;\n" +
                     "attribute vec4 aTextureCoord;\n" +
@@ -154,12 +154,14 @@ class VideoRenderer implements GLTextureView.Renderer, SurfaceTexture.OnFrameAva
         GLES20.glUniformMatrix4fv(uMVPMatrixHandle, 1, false, mVPMatrix, 0);
         GLES20.glUniformMatrix4fv(uSTMatrixHandle, 1, false, sTMatrix, 0);
 
-        if (sTMatrix[5] == -1) {
+        // sTMatrix 가 항등행렬일 경우 그리지 않음
+        if (sTMatrix[0] == 1 && sTMatrix[5] == 1 && sTMatrix[10] == 1 && sTMatrix[15] == 1) {
+            GLES20.glFinish();
+        } else {
             GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+            GLES20.glFinish();
         }
         checkGlError("glDrawArrays");
-
-        GLES20.glFinish();
     }
 
     @Override
