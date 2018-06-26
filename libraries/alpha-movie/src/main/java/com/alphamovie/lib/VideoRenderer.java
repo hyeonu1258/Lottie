@@ -154,7 +154,9 @@ class VideoRenderer implements GLTextureView.Renderer, SurfaceTexture.OnFrameAva
         GLES20.glUniformMatrix4fv(uMVPMatrixHandle, 1, false, mVPMatrix, 0);
         GLES20.glUniformMatrix4fv(uSTMatrixHandle, 1, false, sTMatrix, 0);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        if (sTMatrix[5] == -1) {
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        }
         checkGlError("glDrawArrays");
 
         GLES20.glFinish();

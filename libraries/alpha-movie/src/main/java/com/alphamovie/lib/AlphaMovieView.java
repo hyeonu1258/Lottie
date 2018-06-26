@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Surface;
+import android.widget.Toast;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
