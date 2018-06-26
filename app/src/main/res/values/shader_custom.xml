@@ -16,8 +16,6 @@
               vec4 color = texture2D(sTexture, vTextureCoord);
               if (color.g - color.r >= 0.1 &amp;&amp; color.g - color.b >= 0.1) {
                   gl_FragColor = vec4(color.r, (color.r + color.b) / 2.0, color.b, 0.0);
-              <!--} else if (color.r &lt;= 0.01 &amp;&amp; color.g &lt;= 0.01 &amp;&amp; color.b &lt;= 0.01) {-->
-                  <!--gl_FragColor = vec4(color.r, (color.r + color.b) / 2.0, color.b, 0.0);-->
               } else {
                   gl_FragColor = vec4(color.r, color.g, color.b, color.a);
               }
