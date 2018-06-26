@@ -10,6 +10,9 @@
     <string name="palette">Palette</string>
     <string name="lottie_amp_fresco"><![CDATA[Lottie & Fresco]]></string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="very_large_gif">https://lh4.googleusercontent.com/-ME0kQV2zFZU/TmtO57NQdZI/AAAAAAAAD1A/xkb6HIQ3pI8/s797/_boat_Micael_Reynaud_1000_p20.gif</string>
+    <string name="very_large_gif2">https://lh5.googleusercontent.com/-J9nOy1ypilw/TmtQcZTMEbI/AAAAAAAAD1A/6vOhaQw5P9o/s781/Verre02_Micael_Reynaud_800_p0.gif</string>
+    <string name="very_large_gif3">https://lh5.googleusercontent.com/-mvpIxrtlkAA/Tndmi1sf6zI/AAAAAAAAD1E/I2vwpRqn1z8/s500/FlyEarth500_Micael_Reynaud.gif</string>
+    <string name="very_large_gif4">https://lh3.googleusercontent.com/-bWS7H8CVsv8/Tn0hAPDO1eI/AAAAAAAAEXU/tyWkWvW1p1Y/s797/_Transformer1280_Micael_Reynaud.gif</string>
+    <string name="very_large_gif5">https://lh6.googleusercontent.com/-Kde1FiWiijM/TniZsFpCyqI/AAAAAAAAD7Q/2sZC2Zqx8RM/s500/Contact500_Micael_Reynaud.gif</string>
 </resources>

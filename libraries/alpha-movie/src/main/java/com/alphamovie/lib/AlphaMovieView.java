@@ -302,7 +302,9 @@ public class AlphaMovieView extends GLTextureView {
                     onPreparedListener.onPrepared(mp);
                 }
             });
-            mediaPlayer.prepareAsync();
+            if (!mediaPlayer.isPlaying()) {
+                mediaPlayer.prepareAsync();
+            }
         }
     }
 
