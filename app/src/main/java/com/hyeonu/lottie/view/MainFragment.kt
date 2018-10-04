@@ -1,4 +1,4 @@
-package com.hyeonu.lottie.View
+package com.hyeonu.lottie.view
 
 import android.Manifest
 import android.app.Activity
@@ -23,7 +23,7 @@ import com.airbnb.lottie.model.KeyPath
 import com.airbnb.lottie.value.LottieValueCallback
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
-import com.hyeonu.lottie.Model.Colors
+import com.hyeonu.lottie.model.Colors
 
 import com.hyeonu.lottie.R
 import com.hyeonu.lottie.databinding.FragmentMainBinding
@@ -38,7 +38,6 @@ class MainFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-//        var viewModel = ViewModelProviders.of(this).get(ImageViewModel::class.java)
         initView(inflater, container)
 
         return binding.root
@@ -119,9 +118,8 @@ class MainFragment : Fragment() {
         val fileUri = context?.contentResolver
                 ?.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
                 ?: return
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intent.resolveActivity(context?.packageManager) ?: return
         filePath = fileUri.toString()
+        val intent = Intent(activity, CameraActivity::class.java)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         startActivityForResult(intent, TAKE_PHOTO_REQUEST)

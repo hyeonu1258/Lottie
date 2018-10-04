@@ -1,4 +1,4 @@
-package com.hyeonu.lottie.Model
+package com.hyeonu.lottie.model
 
 class Colors @JvmOverloads constructor(var colorFilter: Int = 0,
                                        var lightVibrant: Int = 0, var lightVibrantTextColor: Int = 0,

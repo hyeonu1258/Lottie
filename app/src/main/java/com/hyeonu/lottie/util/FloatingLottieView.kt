@@ -1,8 +1,7 @@
-package com.hyeonu.lottie.Util
+package com.hyeonu.lottie.util
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.MotionEvent.*
 import com.airbnb.lottie.LottieAnimationView
@@ -11,8 +10,8 @@ import com.airbnb.lottie.LottieDrawable.*
 class FloatingLottieView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
                                                    defStyleAttr: Int = 0)
     : LottieAnimationView(context, attrs, defStyleAttr) {
-    var deltaX = 0f
-    var deltaY = 0f
+    private var deltaX = 0f
+    private var deltaY = 0f
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
 

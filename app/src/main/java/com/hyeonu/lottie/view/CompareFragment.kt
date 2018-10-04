@@ -1,4 +1,4 @@
-package com.hyeonu.lottie.View
+package com.hyeonu.lottie.view
 
 import android.databinding.DataBindingUtil
 import android.graphics.drawable.Animatable
@@ -34,10 +34,10 @@ class CompareFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-//        loadImageAsset()
-
         binding.alphaVideoView.onResume()
         binding.alphaVideoView2.onResume()
+
+//        loadImageAsset()
     }
 
     override fun onPause() {
@@ -72,9 +72,9 @@ class CompareFragment : Fragment() {
         }
 
         binding.frescoBtn.setOnClickListener {
-            mAnimatable?.start()
             binding.alphaVideoView.pause()
             binding.alphaVideoView2.pause()
+            mAnimatable?.start()
         }
     }
 
