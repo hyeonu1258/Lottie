@@ -3,6 +3,8 @@ package com.hyeonu.lottie.view
 import android.app.Activity
 import android.content.res.Configuration
 import android.databinding.DataBindingUtil
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.hardware.Camera
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
@@ -46,8 +48,16 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
                     throw IllegalArgumentException("file is null")
                 }
 
+                var bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                bitmap = Bitmap.createBitmap(bitmap,
+                        bitmap.width / 3,
+                        bitmap.height / 3,
+                        bitmap.width / 3,
+                        bitmap.height / 3)
+
                 val fos = contentResolver.openOutputStream(filePath)
-                fos.write(bytes)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                bitmap.recycle()
                 fos.flush()
                 fos.close()
             } catch (e: IOException) {
@@ -68,11 +78,10 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
     }
 
     private fun setCameraDisplayOrientation(activity: Activity,
-                                            cameraId: Int, camera: android.hardware.Camera?) {
+                                            cameraId: Int, camera: Camera?) {
 
-        val info = android.hardware.Camera.CameraInfo()
-
-        android.hardware.Camera.getCameraInfo(cameraId, info)
+        val info = Camera.CameraInfo()
+        Camera.getCameraInfo(cameraId, info)
 
         val rotation = activity.windowManager.defaultDisplay.rotation
         var degrees = 0
@@ -96,11 +105,11 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
         camera = Camera.open()
-        camera?.autoFocus { _, _ -> }
 
         val param = camera?.parameters
         if (resources.configuration.orientation != Configuration.ORIENTATION_LANDSCAPE) {
             param?.set("orientation", "portrait")
+            param?.setPreviewSize(binding.imageCameraBoundary.width, binding.imageCameraBoundary.height)
             setCameraDisplayOrientation(this, 1, camera)
         }
         camera?.parameters = param
